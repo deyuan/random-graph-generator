@@ -113,5 +113,18 @@ $ gen_graph.py -gpn -n 4 --out g.txt
 ```
 Visualize with pyplot:
 ```
-$ gen_graph.py -grnd -n 6 -d 3 --vis
+$ gen_graph.py -grnd -n 6 -d 3 --seed 0 --vis
+```
+![grnd_n6_d3_seed0](grnd_n6_d3_seed0.png)
+```
+6 9
+0 1
+0 5
+0 4
+1 2
+1 4
+2 3
+2 5
+4 3
+5 3
 ```
