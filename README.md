@@ -1,126 +1,57 @@
 # random-graph-generator
-A python utility based on networkx to generate random graphs as edge lists
+A python utility to generate random graph as edge list for graph algorithm exercises.
 
 [![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=flat-square)](https://github.com/DAVFoundation/captain-n3m0/blob/master/LICENSE)
 
 ## Dependencies
-Tested with python 3.7 and networkx 2.2
+Require Python3 and [NetworkX](https://networkx.org).
+
+Tested with python 3.7 and networkx 2.2.
 
 ## Usage
+Command: `gen_graph.py`
 
-### Help Information
-```
-$ gen_graph.py --help
-usage: gen_graph.py [--help]
-                    (-grnm | -grnd | -grnp | -gkn | -gcn | -gpn | -trn | -tch | -tcn)
-                    [-n node] [-m edge] [-d degree] [-p probability]
-                    [-h height] [-c children] [-w <int|float>] [-wmin <0>]
-                    [-wmax <100>] [--directed] [--one-based] [--seed N]
-                    [--visualize] [--output FILE]
+| Generate Graph Types | Arguments |
+| :--------- | :------ |
+| Random undirected graph with `n` nodes and `m` edges | `-grnm -n <n> -m <m>` |
+| Random undirected graph with `n` nodes and `d` degree | `-grnd -n <n> -d <d>` |
+| Random undirected graph with `n` nodes and `p` edge creation probability | `-grnp -n <n> -p <p>` |
+| Complete graph with `n` nodes | `-gkn -n <n>` |
+| Cycle graph with `n` nodes | `-gcn -n <n>` |
+| Path graph with `n` nodes | `-gpn -n <n>` |
+| Random tree graph with `n` nodes | `-trn -n <n>` |
+| Full `c`-ary tree with `h` height | `-tch -c <c> -h <h>` |
+| Full `c`-ary tree with `n` nodes | `-tcn -c <c> -n <n>` |
 
-optional arguments:
-  --help          show this help message and exit
-  -grnm           random graph with n nodes and m edges
-  -grnd           random graph with n nodes and d degree of each node
-  -grnp           random graph with n nodes and p edge creation probability
-  -gkn            complete graph of n nodes
-  -gcn            cycle graph of n cyclically connected nodes
-  -gpn            path graph of n linearly connected nodes
-  -trn            random tree with n nodes
-  -tch            full c-ary tree with h height
-  -tcn            full c-ary tree with n nodes
-  -n node         number of nodes
-  -m edge         number of edges
-  -d degree       degree of nodes in a graph
-  -p probability  edge creation probability
-  -h height       tree height
-  -c children     number of children in a tree
-  -w <int|float>  enable edge weight of type int or float
-  -wmin <0>       minimum edge weight
-  -wmax <100>     maximum edge weight
-  --directed      generate directed graph
-  --one-based     output edges using one-based node ids
-  --seed N        random seed
-  --visualize     visualize generated graph using pyplot
-  --output FILE   output generated graph as an edge list to a file
-```
-
-### Generate Graphs
-
-Random undirected graph with `n` nodes and `m` edges:
-```
-$ gen_graph.py -grnm -n <n> -m <m>
-```
-Random undirected graph with `n` nodes and `d` degree:
-```
-$ gen_graph.py -grnd -n <n> -d <d>
-```
-Random undirected graph with `n` nodes and `p` edge creation probability:
-```
-$ gen_graph.py -grnp -n <n> -p <p>
-```
-Random directed graph with `n` nodes and `m` edges:
-```
-$ gen_graph.py -grnm -n <n> -m <m> --dir
-```
-Complete graph with `n` nodes:
-```
-$ gen_graph.py -gkn -n <n>
-```
-Cycle graph with `n` nodes:
-```
-$ gen_graph.py -gcn -n <n>
-```
-Path graph with `n` nodes:
-```
-$ gen_graph.py -gpn -n <n>
-```
-
-### Generate Trees
-Random tree with `n` nodes:
-```
-$ gen_graph.py -trn -n <n>
-```
-Full `c`-ary tree with `h` height:
-```
-$ gen_graph.py -tch -c <c> -h <h>
-```
-Full `c`-ary tree with `n` nodes:
-```
-$ gen_graph.py -tcn -c <c> -n <n>
-```
+| More Options | Arguments |
+| :--------- | :---- |
+| Show help messages | `--help` |
+| Add `int` edge weights in range `[0, 100]` | `-w int` |
+| Add `int` edge weights in range `[a, b]` | `-w int -wmin <a> -wmax <b>` |
+| Add `float` edge weights in range `[a, b]` | `-w float -wmin <a> -wmax <b>` |
+| Generate directed graph | `--dir` |
+| Use 1-indexed | `--one-based` |
+| Use random seed | `--seed <N>` |
+| Visualize graph with pyplot | `--visualize` |
+| Output to a file instead of stdout | `--output <filename>` |
 
 ### Output Format
-Output to stdout:
+The first line shows the total number of nodes and edges:
 ```
-$ gen_graph.py -gpn -n 4
+<num-nodes> <num-edges>
 ```
+The rest of lines show one edge per line with from/to nodes (0-indexed by default) and weight (if enabled): 
 ```
-4 3
-0 1
-1 2
-2 3
+<from-node1> <to-node1> [weight1]
+<from-node2> <to-node2> [weight2]
+<from-node3> <to-node3> [weight3]
+...
 ```
-Output to stdout with 1-based node indices:
-```
-$ gen_graph.py -gpn -n 4 --one
-```
-```
-4 3
-1 2
-2 3
-3 4
-```
-Output to a file:
-```
-$ gen_graph.py -gpn -n 4 --out g.txt
-```
-Visualize with pyplot:
+
+## Examples
+### Graph with Fixed Degree
 ```
 $ gen_graph.py -grnd -n 6 -d 3 --seed 0 --vis
-```
-![grnd_n6_d3_seed0](images/grnd_n6_d3_seed0.png)
-```
 6 9
 0 1
 0 5
@@ -132,12 +63,29 @@ $ gen_graph.py -grnd -n 6 -d 3 --seed 0 --vis
 4 3
 5 3
 ```
-Graph with edge weights:
+![grnd_n6_d3_seed0](images/grnd_n6_d3_seed0.png)
+
+```
+$ gen_graph.py -grnd -n 8 -d 3 --seed 34 --vis
+8 12
+2 7
+2 3
+2 5
+7 4
+7 6
+0 1
+0 6
+0 4
+1 3
+1 5
+4 3
+6 5
+```
+![grnd_n8_d3_seed34](images/grnd_n8_d3_seed34.png)
+
+### Graph with Weighted Edges
 ```
 $ gen_graph.py -grnm -n 10 -m 15 -w int --seed 0 --vis
-```
-![grnm_n10_m15_wint_seed0](images/grnm_n10_m15_wint_seed0.png)
-```
 10 15
 0 4 49
 0 8 97
@@ -155,4 +103,5 @@ $ gen_graph.py -grnm -n 10 -m 15 -w int --seed 0 --vis
 5 6 27
 7 8 64
 ```
+![grnm_n10_m15_wint_seed0](images/grnm_n10_m15_wint_seed0.png)
 
