@@ -127,6 +127,30 @@ class TestGrnm(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as redirect:
             gen_graph.main(argv)
             self.assertEqual(redirect.getvalue(), '2 1\n1 2\n')
+    def test_grnm_n3_m1_dir_seed0_wint(self):
+        """ Test grnm n=3 m=1 directed seed=5 w=int"""
+        argv = ['-grnm', '-n', '3', '-m', '1', '--dir', '--seed', '0', '-w', 'int']
+        with patch('sys.stdout', new=StringIO()) as redirect:
+            gen_graph.main(argv)
+            self.assertEqual(redirect.getvalue(), '3 1\n0 1 49\n')
+    def test_grnm_n3_m1_dir_seed0_wint_range(self):
+        """ Test grnm n=3 m=1 directed seed=5 w=int wmin=77 wmax=77"""
+        argv = ['-grnm', '-n', '3', '-m', '1', '--dir', '--seed', '0', '-w', 'int', '-wmin', '77', '-wmax', '77']
+        with patch('sys.stdout', new=StringIO()) as redirect:
+            gen_graph.main(argv)
+            self.assertEqual(redirect.getvalue(), '3 1\n0 1 77\n')
+    def test_grnm_n3_m1_dir_seed0_wfloat(self):
+        """ Test grnm n=3 m=1 directed seed=5 w=float"""
+        argv = ['-grnm', '-n', '3', '-m', '1', '--dir', '--seed', '0', '-w', 'float']
+        with patch('sys.stdout', new=StringIO()) as redirect:
+            gen_graph.main(argv)
+            self.assertEqual(redirect.getvalue(), '3 1\n0 1 84.44\n')
+    def test_grnm_n3_m1_dir_seed0_wfloat_range(self):
+        """ Test grnm n=3 m=1 directed seed=5 w=float wmin=12.34 wmax=12.36"""
+        argv = ['-grnm', '-n', '3', '-m', '1', '--dir', '--seed', '0', '-w', 'float', '-wmin', '12.34', '-wmax', '12.36']
+        with patch('sys.stdout', new=StringIO()) as redirect:
+            gen_graph.main(argv)
+            self.assertEqual(redirect.getvalue(), '3 1\n0 1 12.35\n')
 
 class TestGrnd(unittest.TestCase):
     """ Unit tests for random graph with n nodes and d degree """

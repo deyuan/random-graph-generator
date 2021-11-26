@@ -6,8 +6,10 @@ Generate various random graphs using networkx and output as edge list
 Can be used as input of graph algorithm exercises
 
 Output Format:
-    5 5     # The first line contains total number of nodes and edges
-    0 1     # Each of remaining lines contains from node and to node as an edge
+    <num-nodes> <num-edges>
+    <from-node> <to-node> [weight]
+    <from-node> <to-node> [weight]
+    <from-node> <to-node> [weight]
     ...
 
 Example:
@@ -17,17 +19,19 @@ Example:
     $ python gen_graph.py -grnm -n 5 -m 5 --one
     $ python gen_graph.py -grnm -n 5 -m 5 --vis
     $ python gen_graph.py -grnm -n 5 -m 5 --out g.txt
+    $ python gen_graph.py -grnm -n 5 -m 5 -w int
 
 Author: Deyuan Guo <guodeyuan@gmail.com>
 Date: Jan 5, 2020
 Ref: https://networkx.github.io/documentation/stable/reference/generators.html
+Update: Nov 25, 2021. Support edge weights.
 """
 
 import sys
 import os
 import argparse
 import warnings
-import networkx as nx
+import random
 warnings.filterwarnings('ignore')
 
 def int_non_neg(arg):
@@ -88,6 +92,13 @@ def create_parser():
     parser.add_argument('-c', metavar='children', type=int_non_neg,
                         help='number of children in a tree')
 
+    parser.add_argument('-w', metavar='<int|float>', type=str, choices=['int', 'float'],
+                        help='enable edge weight of type int or float')
+    parser.add_argument('-wmin', metavar='<0>', type=float, default=0,
+                        help='minimum edge weight')
+    parser.add_argument('-wmax', metavar='<100>', type=float, default=100,
+                        help='maximum edge weight')
+
     parser.add_argument('--directed', action='store_true',
                         help='generate directed graph')
     parser.add_argument('--one-based', action='store_true',
@@ -124,9 +135,12 @@ def parse_arguments(argv):
     if args.output is not None and os.path.exists(args.output):
         parser.error('file %s already exists' % args.output)
 
+    if args.wmin > args.wmax:
+        parser.error('min weight is greater than max weight')
+
     return args
 
-def gen_graph(args):
+def gen_graph(nx, args):
     """ Generate a graph based on command line arguments """
     graph = None
     ref = nx.DiGraph if args.directed else None
@@ -155,41 +169,75 @@ def gen_graph(args):
         print('Error: %s' % err)
     except nx.NetworkXPointlessConcept as err:
         print('Error: %s' % err)
+
+    # Generate random weights
+    if args.w is not None:
+        if args.seed is not None:
+            random.seed(args.seed)
+        for edge in graph.edges():
+            weight = 0
+            if args.w == 'int':
+                weight = random.randint(int(args.wmin), int(args.wmax))
+            elif args.w == 'float':
+                weight = random.uniform(args.wmin, args.wmax)
+                # keep 2 decimal digits
+                weight = int(weight * 100) / 100
+            graph[edge[0]][edge[1]]['weight'] = weight
+
     return graph
 
-def show_graph(graph):
+def show_graph(nx, graph):
     """ Visualize the graph """
     import matplotlib.pyplot as plt
     pos = nx.spring_layout(graph)
     nx.draw(graph, pos=pos, with_labels=True)
+    labels = nx.get_edge_attributes(graph, 'weight')
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=labels)
     plt.show()
 
-def output_edge_list(graph, one_based, filename):
+def output_edge_list(nx, graph, args):
     """ Output num node, num edge and edge list """
+    one_based = args.one_based
+    filename = args.output
+    weighted = args.w is not None
+
     num_node = graph.number_of_nodes()
     num_edge = graph.number_of_edges()
     base = 1 if one_based else 0
-    edge_list = [[edge[0] + base, edge[1] + base] for edge in graph.edges()]
+    if weighted:
+        edge_list = [[edge[0] + base, edge[1] + base, graph[edge[0]][edge[1]]['weight']] for edge in graph.edges()]
+    else:
+        edge_list = [[edge[0] + base, edge[1] + base] for edge in graph.edges()]
 
     if filename is None:
         print(num_node, num_edge)
         for edge in edge_list:
-            print(edge[0], edge[1])
+            if weighted:
+                print(edge[0], edge[1], edge[2])
+            else:
+                print(edge[0], edge[1])
         return
     with open(filename, 'w') as fout:
         print(num_node, num_edge, file=fout)
         for edge in edge_list:
-            print(edge[0], edge[1], file=fout)
+            if weighted:
+                print(edge[0], edge[1], edge[2], file=fout)
+            else:
+                print(edge[0], edge[1], file=fout)
     print('Saved edge list in %s' % filename)
 
 def main(argv):
     """ Graph generator main entry """
     args = parse_arguments(argv)
-    graph = gen_graph(args)
+
+    # To speed up error check, import networkx module here
+    import networkx as nx
+
+    graph = gen_graph(nx, args)
     if graph is not None:
-        output_edge_list(graph, args.one_based, args.output)
+        output_edge_list(nx, graph, args)
         if args.visualize:
-            show_graph(graph)
+            show_graph(nx, graph)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
