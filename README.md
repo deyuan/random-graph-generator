@@ -119,7 +119,7 @@ Visualize with pyplot:
 ```
 $ gen_graph.py -grnd -n 6 -d 3 --seed 0 --vis
 ```
-![grnd_n6_d3_seed0](grnd_n6_d3_seed0.png)
+![grnd_n6_d3_seed0](images/grnd_n6_d3_seed0.png)
 ```
 6 9
 0 1
@@ -136,7 +136,7 @@ Graph with edge weights:
 ```
 $ gen_graph.py -grnm -n 10 -m 15 -w int --seed 0 --vis
 ```
-![grnm_n10_m15_wint_seed0](grnm_n10_m15_wint_seed0.png)
+![grnm_n10_m15_wint_seed0](images/grnm_n10_m15_wint_seed0.png)
 ```
 10 15
 0 4 49
