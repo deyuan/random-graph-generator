@@ -4,9 +4,20 @@ A python utility to generate random graph as edge list for graph algorithm exerc
 [![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=flat-square)](https://github.com/DAVFoundation/captain-n3m0/blob/master/LICENSE)
 
 ## Dependencies
-Require Python3 and [NetworkX](https://networkx.org).
+This utility is developed and tested using Python 3.7.
 
-Tested with python 3.7 and networkx 2.2.
+Dependencies:
+* `networkx` for graph generation
+* `matplotlib` for graph visualization
+
+A few built-in Python modules are used:
+* `argparse` for command line argument parsing
+* `random` for random number generation
+* `unittest` for unit tests
+
+Tested with python 3.7, networkx 2.2, and matplotlib 3.0.3.
+
+NetworkX official site: https://networkx.org
 
 ## Usage
 Command: `gen_graph.py`
@@ -32,7 +43,7 @@ Command: `gen_graph.py`
 | Generate directed graph | `--dir` |
 | Use 1-indexed | `--one-based` |
 | Use random seed | `--seed <N>` |
-| Visualize graph with pyplot | `--visualize` |
+| Visualize graph with matplotlib | `--visualize` |
 | Output to a file instead of stdout | `--output <filename>` |
 
 ### Output Format
