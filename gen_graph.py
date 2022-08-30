@@ -106,7 +106,7 @@ def create_parser():
     parser.add_argument('--seed', metavar='N', type=int,
                         help='random seed')
     parser.add_argument('--visualize', action='store_true',
-                        help='visualize generated graph using pyplot')
+                        help='visualize generated graph using matplotlib')
     parser.add_argument('--output', metavar='FILE', type=str,
                         help='output generated graph as an edge list to a file')
 
